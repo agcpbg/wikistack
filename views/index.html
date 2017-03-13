@@ -1,9 +1,24 @@
 {% extends "layout.html" %}
 
 {% block content %}
-  <h3>Pages</h3>
+
+
+  <h3>{{title}}</h3>
   <hr>
   <ul class="list-unstyled">
     <!-- PLACEHOLDER LIST OF PAGES -->
+
+    {% for page in pages %}
+        {% if page.title %}
+        <li><a href="{{page.route}}">{{page.title}}</a></li>
+        {% endif %}
+
+        {% if page.name %}
+        <li><a href="/users/{{page.id}}">{{page.name}}</a></li>
+        {% endif %}
+
+    {% endfor %}
   </ul>
+
+
 {% endblock %}

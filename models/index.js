@@ -22,7 +22,10 @@ let Page = db.define('page', {
 let User = db.define('user', {
 	name: {type: Sequelize.STRING, allowNull: false},
 	email: {type: Sequelize.STRING, allowNull: false, validate: {isEmail: true}}
-})
+});
+
+Page.belongsTo(User, { as: 'author' });
+
 
 function generateUrlTitle(title) {
 	  if (title) {
