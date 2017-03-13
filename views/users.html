@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+  <h3>Page for {{user.name}}</h3>
+  <h3> {{user.email}} </h3>
+  <hr>
+  <ul class="list-unstyled">
+    <!-- PLACEHOLDER LIST OF PAGES -->
+
+    {% for page in pages %} 
+      <li><a href="/wiki/{{page.urlTitle}}">{{page.title}}</a></li>
+
+    {% endfor %}
+  </ul>
+
+
+{% endblock %}

@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
+var Promise = require('bluebird')
 module.exports = router;
 
 var Page = models.Page;
@@ -46,16 +47,30 @@ router.get('/add', function(req, res, next) {
 
 router.get('/:pageName', function(req, res, next){
   let pageName = req.params.pageName;
-
-  Page.findOne({
+  var pagePromise = Page.findOne({
     where: {
       urlTitle: pageName
     }
   })
-  .then(function(page){
-    res.render('wikipage', {rowObj: page});
+  var userPromise = Page.findOne({
+    where: {
+      urlTitle: pageName
+    }
   })
-  .catch(next);
+  .then(function(page) {
+    return User.findOne({
+       where: {
+        id: page.authorId
+      }
+    })
+  }) 
+  Promise.all([pagePromise, userPromise])
+    .then(function(resArr) {
+      var pageRow = resArr[0];
+      var userRow = resArr[1];
+      res.render('wikipage', {rowObj: pageRow, userObj: userRow})
+    })
+  //end of router.get
+})
 
-});
 
