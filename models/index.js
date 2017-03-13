@@ -6,7 +6,8 @@ let Page = db.define('page', {
 	urlTitle: {type: Sequelize.STRING, allowNull: false},
 	content: {type: Sequelize.TEXT, allowNull: false},
 	status: {type: Sequelize.ENUM('open', 'closed')},
-	date: {type: Sequelize.DATE, defaultValue: Sequelize.NOW}
+	date: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
+  tags: {type: Sequelize.ARRAY(Sequelize.TEXT)}
 }, {
 	getterMethods: {
 		route: function() {

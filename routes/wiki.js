@@ -26,6 +26,7 @@ router.post('/', function(req, res, next) {
     return Page.create({
       title: req.body.title,
       content: req.body.content,
+      tags: req.body.tags.split(' '),
       status: req.body.status
     })
     .then(function(page){
@@ -63,14 +64,30 @@ router.get('/:pageName', function(req, res, next){
         id: page.authorId
       }
     })
-  }) 
+  })
   Promise.all([pagePromise, userPromise])
     .then(function(resArr) {
       var pageRow = resArr[0];
       var userRow = resArr[1];
-      res.render('wikipage', {rowObj: pageRow, userObj: userRow})
+      var tagsArray = pageRow.tags.join(' ');
+      res.render('wikipage', {rowObj: pageRow, userObj: userRow, tags: tagsArray})
     })
   //end of router.get
 })
 
+router.get('/search', function(req, res, next) {
+  var tag = req.body.tag;
+  models.Page.findAll({
+    where: {
+      tags: { $contains: tag }
+    }
+  })
+    .then(function(results) {
+      res.json(results);
+    })
+    .catch(console.error)
+});
 
+router.get('/search/form', function(req, res, next) {
+  res.render('tagForm');
+});
