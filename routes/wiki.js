@@ -26,7 +26,7 @@ router.post('/', function(req, res, next) {
     return Page.create({
       title: req.body.title,
       content: req.body.content,
-      tags: req.body.tags.split(' '),
+      tags: req.body.tags.split(',').map((s) => {return s.trim()}),
       status: req.body.status
     })
     .then(function(page){
@@ -73,21 +73,23 @@ router.get('/:pageName', function(req, res, next){
       res.render('wikipage', {rowObj: pageRow, userObj: userRow, tags: tagsArray})
     })
   //end of router.get
-})
+});
 
-router.get('/search', function(req, res, next) {
-  var tag = req.body.tag;
-  models.Page.findAll({
+router.get('/:pageName/similar', (req, res, next) => {
+
+  Page.findOne({
     where: {
-      tags: { $contains: tag }
+      urlTitle: req.params.pageName
+
     }
   })
-    .then(function(results) {
-      res.json(results);
-    })
-    .catch(console.error)
+  .then(function(page){
+    return page.findSimilar();
+  })
+  .then(function(pages){
+    res.render('index', {title: 'Similar pages', pages, pages})
+  })
+  .catch(next)
+
 });
 
-router.get('/search/form', function(req, res, next) {
-  res.render('tagForm');
-});

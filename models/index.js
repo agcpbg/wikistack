@@ -18,8 +18,19 @@ let Page = db.define('page', {
 		beforeValidate: function(page, options) {
 			page.urlTitle = generateUrlTitle(page.title);
 		}
-	}
-})
+	},
+    instanceMethods: {
+        findSimilar: function() {
+            return Page.findAll({
+                where: {
+                    tags: {
+                        $overlap: this.tags
+                    }
+                }
+            });
+        }
+    }
+});
 let User = db.define('user', {
 	name: {type: Sequelize.STRING, allowNull: false},
 	email: {type: Sequelize.STRING, allowNull: false, validate: {isEmail: true}}

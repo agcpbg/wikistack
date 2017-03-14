@@ -28,8 +28,24 @@ app.get('/', function(req, res, next) {
 			res.render('index', {title: 'Pages', pages: allPages});
 
 		})
+});
 
-  // res.render('index');
+app.get('/search', function(req, res, next) {
+  res.render('tagForm');
+
+app.get('/search/form', function(req, res, next) {
+    var tag = req.query.tag;
+    console.log(tag)
+    models.Page.findAll({
+      where: {
+        tags: { $overlap: [tag] }
+      }
+    })
+      .then(function(results) {
+      	res.render('index', {title: `Tags for ${tag}`, pages: results})
+      })
+      .catch(console.error)
+  });
 });
 
 
@@ -46,7 +62,3 @@ models.User.sync({})
 	.catch(console.error)
 
 
-// var server = app.listen(3000, function() {
-// 	db.sync()
-// 	console.log('server listening');
-// });
